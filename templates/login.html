@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<style>
+    div .inside {
+       margin-top:0px;
+    padding-top:20px;
+    padding-bottom:20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    background-image: url("#");
+    background-color: white;
+    }
+</style>
+<div class="text-center">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <div class="inside">
+<form method="POST">
+    {% csrf_token %}
+    <h3>Username :</h3> <input type="text" name="username"/><br><br>
+  <h3>Password :</h3> <input type="text" name="password"/><br><br>
+  <input type="submit" />
+</form>
+    </div>
+</div>
+</body>
+</html>

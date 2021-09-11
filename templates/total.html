@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<html lang="en">
+<head>
+    <script src="https://kit.fontawesome.com/da288a76e0.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>Total</title>
+</head>
+<body>
+<style>
+    .lightgreen{
+    background-color: lightgreen;
+    }
+    .red{
+    background-color: red;
+    }
+    .lightorange{
+    background-color: orange;
+    }
+    .fas {
+    font-size: 50px;
+    }
+    .icon {
+    font-size: 15px;
+    }
+    h1{
+    color: black;
+    margin-top:0px;
+    padding-top:20px;
+    padding-bottom:20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    background-image: url("https://i.ytimg.com/vi/Eo9qB-vqSiQ/maxresdefault.jpg");
+    background-size: cover;
+    }
+    .col-lg-4 col-xs-12 col-sm-12 text-center{
+    margin-bottom:10px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+    body{
+    background-image: url("https://media.istockphoto.com/photos/one-tulip-on-white-background-picture-id1184648148?k=20&m=1184648148&s=170667a&w=0&h=Du42l5rz9JuYRFd93sZAVapDgFsNVryMrirntnmnFLE=");
+    background-size: cover;
+    background-repeat: no-repeat;
+    }
+    h2.rev{
+    color: lightgreen;
+    }
+    h2.ex{
+    color: red;
+    }
+    h2.lb{
+    color: orange;
+    }
+    .chart-center{
+    margin-left:38%
+    }
+</style>
+<h1 class="text-center">今日表现</h1>
+<br><br>
+<div class="text-center  w3-animate-zoom">
+<h2>毛利润</h2>
+<h1><strong>RM{{ profit }}</strong></h1>
+<br><br>
+</div>
+<div class="text-center">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="chart-center" style="width:25%">
+<canvas id="myChart" width="50" height="50" ></canvas>
+</div>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['收入','开销','人工'],
+        datasets: [{
+            label: '# of Votes',
+            data: {{data|safe}},
+            backgroundColor: [
+                'rgba(0, 200, 0, 1)',
+                'rgba(200, 0, 0, 1)',
+                'rgba(255, 206, 86, 1)',
+            ],
+            borderColor: [
+                'rgba(0, 200, 0, 1)',
+                'rgba(200, 0, 0, 1)',
+                'rgba(255, 206, 86, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+
+
+    }
+});
+</script>
+
+<br><br>
+
+</div>
+    <div class="row text-center">
+        <div class="col-lg-4 col-md-4 col-xs-12 col-sm-12 text-center">
+<h3><mark class="lightgreen"> 今日营收: <strong> RM{{ total_revenue }}</strong></mark></h3>
+<h5> 应收数量: <strong> {{ rev_num }}</strong></h5>
+            {% if revenues %}
+{% for revenue in revenues %}
+            <div>
+               <h5><mark class="lightgreen">RM{{ revenue.PriceAmount }}</mark> - {{ revenue.UnitNumber }} - {{ revenue.PayerName }} - {% if revenue.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}<a href="{% url 'Redelete' revenue.id %}"><i class="icon fas fa-trash-alt"></i></a> </h5>
+
+            </div>
+
+{% endfor %}
+{% else %}
+<h4>今日没有收入</h4>
+{% endif %}
+        </div>
+        <div class="col-lg-4 col-md-4 col-xs-6 col-sm-6 text-center">
+<h3> <mark class="red">今日开销: <strong> RM{{ total_expense }}</strong></mark></h3>
+<h5> 开销数量: <strong> {{ ex_num }}</strong></h5>
+            {% if expenses %}
+{% for expense in expenses %}
+            <div>
+<h5><mark class="red">RM{{ expense.PriceAmount }}</mark> - {% if expense.Supplier %}{{expense.Supplier}}{% else %} No record {% endif %} - {{expense.Date}} - {% if expense.Doc %} <a href="{{expense.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %} <a href="{% url 'Exdelete' expense.id %}"><i class="icon fas fa-trash-alt"></i></a> </h5>
+            </div>
+{% endfor %}
+{% else %}
+<h4>今日没有开销</h4>
+{% endif %}
+        </div>
+        <div class="col-lg-4 col-md-4 col-xs-6 col-sm-6 text-center">
+<h3><mark class="lightorange"> 今日人工: <strong>RM{{ total_labour }}</strong></mark></h3>
+<h5> 人工数量: <strong> {{ la_num }}</strong></h5>
+            {% if labours %}
+{% for labour in labours %}
+    <div>
+<h5><mark class="lightorange">RM{{ labour.PriceAmount }}</mark> - {% if labour.LabourName %}{{ labour.LabourName }}{% else %} No Name record {% endif %} - {{labour.DateTime}} - {% if labour.Doc %} <a href="{{labour.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}<a href="{% url 'Ladelete' labour.id %}"><i class="icon fas fa-trash-alt"></i></a> </h5>
+    </div>
+{% endfor %}
+{% else %}
+ <h4>今日没有人工费</h4>
+{% endif %}
+        </div>
+    </div>
+<br><br>
+<div class="text-center">
+<a href="{% url 'pdf' %}"><i class="fas fa-file-pdf"></i><h5>下载今日表现</h5></a>
+</div>
+    <br><br>
+<div class="text-center">
+    <form method="POST">
+        {% csrf_token %}
+        <button value="Send to email">发送到邮箱</button>
+    </form>
+</div>
+<br><br>
+<div class="text-center">
+<button><a href="{% url 'index' %}">主页</a></button>
+</div>
+</body>
+</html>

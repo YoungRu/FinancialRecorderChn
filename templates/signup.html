@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+</head>
+<body>
+<h1>you signup here</h1>
+<div class="text-center">
+<form method="POST">
+    {% csrf_token %}
+    <h3>Username :</h3> <input type="text" name="username"/><br><br>
+  <h3>Email    :</h3> <input type="text" name="email"/><br><br>
+  <h3>Password :</h3> <input type="text" name="password"/><br><br>
+  <h3>Repeat password:</h3> <input type="text" name="password2"/><br><br>
+  <input type="submit" />
+</form>
+</body>
+</html>
