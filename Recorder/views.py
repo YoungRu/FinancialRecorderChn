@@ -20,38 +20,35 @@ from django.core.mail import send_mail
 from PIL import Image
 # Create your views here.
 def index(request):
-    r = requests.get('http://httpbin.org/status/418')
-    print(r.text)
-    return HttpResponse('<pre>' + r.text + '</pre>')
-    # if request.method == 'GET':
-    #     RForm = RevenueForm()
-    #     EForm = ExpendForm()
-    #     LForm = LabourForm()
-    #     return render(request, 'index.html',{'RForm':RForm,'EForm':EForm, 'LForm':LForm})
-    # else:
-    #     if request.POST.get('revenue'):
-    #         form = RevenueForm(request.POST, request.FILES)
-    #         if form.is_valid():
-    #             newform = form.save(commit=False)
-    #             newform.user = request.user
-    #             newform.save()
-    #             return redirect('index')
-    #     elif request.POST.get('expend'):
-    #         form = ExpendForm(request.POST, request.FILES)
-    #         if form.is_valid():
-    #             newform = form.save(commit=False)
-    #             newform.user = request.user
-    #             newform.save()
-    #             return redirect('index')
-    #     elif request.POST.get('labour'):
-    #         form = LabourForm(request.POST, request.FILES)
-    #         if form.is_valid():
-    #             newform = form.save(commit=False)
-    #             newform.user = request.user
-    #             newform.save()
-    #             return redirect('index')
-    #     else:
-    #         return redirect('total')
+    if request.method == 'GET':
+        RForm = RevenueForm()
+        EForm = ExpendForm()
+        LForm = LabourForm()
+        return render(request, 'index.html',{'RForm':RForm,'EForm':EForm, 'LForm':LForm})
+    else:
+        if request.POST.get('revenue'):
+            form = RevenueForm(request.POST, request.FILES)
+            if form.is_valid():
+                newform = form.save(commit=False)
+                newform.user = request.user
+                newform.save()
+                return redirect('index')
+        elif request.POST.get('expend'):
+            form = ExpendForm(request.POST, request.FILES)
+            if form.is_valid():
+                newform = form.save(commit=False)
+                newform.user = request.user
+                newform.save()
+                return redirect('index')
+        elif request.POST.get('labour'):
+            form = LabourForm(request.POST, request.FILES)
+            if form.is_valid():
+                newform = form.save(commit=False)
+                newform.user = request.user
+                newform.save()
+                return redirect('index')
+        else:
+            return redirect('total')
 
 def signup(request):
     if request.method == 'POST':
