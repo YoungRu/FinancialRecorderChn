@@ -55,7 +55,7 @@
             <h5> 总收入: </h5><h3> RM{{ total_rev }}  </h3>
             <hr>
             {% for rv in revs %}
-            <h5>  RM{{ rv.PriceAmount }} - {{ rv.PayerName }} - {{ rv.UnitNumber }}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
+            <h5>  RM{{ rv.PriceAmount }} {% if rv.PayerName %} - {{ rv.PayerName }} {% else %}{% endif %} {% if rv.UnitNumber %} - {{ rv.UnitNumber }} {% else %}{% endif %}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
             {% endfor %}
             <br>
         </div>
