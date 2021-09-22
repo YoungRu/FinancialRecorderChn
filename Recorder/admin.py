@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import Revenue, Expend, Labour
 # Register your models here.
-admin.site.register(Revenue)
-admin.site.register(Expend)
-admin.site.register(Labour)
+class DateAdmin(admin.ModelAdmin):
+    readonly_fields = ['Date']
+
+admin.site.register(Revenue, DateAdmin)
+admin.site.register(Expend, DateAdmin)
+admin.site.register(Labour, DateAdmin)

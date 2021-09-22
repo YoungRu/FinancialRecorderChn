@@ -98,7 +98,6 @@ var myChart = new Chart(ctx, {
 </script>
 
 <br><br>
-
 </div>
     <div class="row text-center">
         <div class="col-lg-4 col-md-4 col-xs-12 col-sm-12 text-center">
@@ -107,10 +106,8 @@ var myChart = new Chart(ctx, {
             {% if revenues %}
 {% for revenue in revenues %}
             <div>
-               <h5><mark class="lightgreen">RM{{ revenue.PriceAmount }}</mark> - {{ revenue.UnitNumber }} - {{ revenue.PayerName }} - {% if revenue.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}<a href="{% url 'Redelete' revenue.id %}"><i class="icon fas fa-trash-alt"></i></a> </h5>
-
+               <h5><mark class="lightgreen">RM{{ revenue.PriceAmount }}</mark> - {{ revenue.UnitNumber }} - {{ revenue.PayerName }}- {{ revenue.Date }} - {% if revenue.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}<a href="{% url 'Redelete' revenue.id %}"><i class="icon fas fa-trash-alt"></i></a> </h5>
             </div>
-
 {% endfor %}
 {% else %}
 <h4>今日没有收入</h4>

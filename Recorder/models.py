@@ -8,7 +8,6 @@ class Revenue(models.Model):
     PayerName = models.CharField(max_length=100, null=True, blank=True)
     Doc = models.ImageField(null=True, upload_to='proof/',blank=True)
     Time = models.TimeField(auto_now_add=True)
-    DateTime = models.DateTimeField(auto_now_add=True, null=True)
     Date = models.DateField(auto_now_add=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, default='1')
 
@@ -20,7 +19,6 @@ class Expend(models.Model):
     Supplier = models.CharField(max_length=50, blank=True)
     Doc = models.FileField(null=True, upload_to='proof/', blank=True)
     Time = models.TimeField(auto_now_add=True)
-    DateTime = models.DateTimeField(auto_now_add=True, null=True)
     Date = models.DateField(auto_now_add=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, default='1')
 
@@ -31,7 +29,6 @@ class Labour(models.Model):
     PriceAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     LabourName = models.CharField(max_length=50, blank=True)
     Time = models.TimeField(auto_now_add=True)
-    DateTime = models.DateTimeField(auto_now_add=True, null=True)
     Date = models.DateField(auto_now_add=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, default='1')
 

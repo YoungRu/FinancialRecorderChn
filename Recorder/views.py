@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.db.models.functions import Now
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.conf import settings
@@ -9,6 +10,7 @@ from .models import Revenue
 from .models import Expend
 from .models import Labour
 import datetime
+import requests
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -18,35 +20,38 @@ from django.core.mail import send_mail
 from PIL import Image
 # Create your views here.
 def index(request):
-    if request.method == 'GET':
-        RForm = RevenueForm()
-        EForm = ExpendForm()
-        LForm = LabourForm()
-        return render(request, 'index.html',{'RForm':RForm,'EForm':EForm, 'LForm':LForm})
-    else:
-        if request.POST.get('revenue'):
-            form = RevenueForm(request.POST, request.FILES)
-            if form.is_valid():
-                newform = form.save(commit=False)
-                newform.user = request.user
-                newform.save()
-                return redirect('index')
-        elif request.POST.get('expend'):
-            form = ExpendForm(request.POST, request.FILES)
-            if form.is_valid():
-                newform = form.save(commit=False)
-                newform.user = request.user
-                newform.save()
-                return redirect('index')
-        elif request.POST.get('labour'):
-            form = LabourForm(request.POST, request.FILES)
-            if form.is_valid():
-                newform = form.save(commit=False)
-                newform.user = request.user
-                newform.save()
-                return redirect('index')
-        else:
-            return redirect('total')
+    r = requests.get('http://httpbin.org/status/418')
+    print(r.text)
+    return HttpResponse('<pre>' + r.text + '</pre>')
+    # if request.method == 'GET':
+    #     RForm = RevenueForm()
+    #     EForm = ExpendForm()
+    #     LForm = LabourForm()
+    #     return render(request, 'index.html',{'RForm':RForm,'EForm':EForm, 'LForm':LForm})
+    # else:
+    #     if request.POST.get('revenue'):
+    #         form = RevenueForm(request.POST, request.FILES)
+    #         if form.is_valid():
+    #             newform = form.save(commit=False)
+    #             newform.user = request.user
+    #             newform.save()
+    #             return redirect('index')
+    #     elif request.POST.get('expend'):
+    #         form = ExpendForm(request.POST, request.FILES)
+    #         if form.is_valid():
+    #             newform = form.save(commit=False)
+    #             newform.user = request.user
+    #             newform.save()
+    #             return redirect('index')
+    #     elif request.POST.get('labour'):
+    #         form = LabourForm(request.POST, request.FILES)
+    #         if form.is_valid():
+    #             newform = form.save(commit=False)
+    #             newform.user = request.user
+    #             newform.save()
+    #             return redirect('index')
+    #     else:
+    #         return redirect('total')
 
 def signup(request):
     if request.method == 'POST':
@@ -139,9 +144,9 @@ def total(request):
         emaillist = []
         usersmail = request.user.email
         emaillist.append(usersmail)
-        revenues = Revenue.objects.filter(Date__gte=datetime.date.today())
-        expenses = Expend.objects.filter(Date__gte=datetime.date.today())
-        labours = Labour.objects.filter(Date__gte=datetime.date.today())
+        revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+        expenses = Expend.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+        labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
         total_revenue = 0
         total_expense = 0
         total_labour = 0
@@ -170,9 +175,9 @@ def pdf(request):
     textob = p.beginText()
     textob.setTextOrigin(inch, inch)
     textob.setFont('Helvetica', 14)
-    revenues = Revenue.objects.filter(Date__gte=datetime.date.today())
-    expenses = Expend.objects.filter(Date__gte=datetime.date.today())
-    labours = Labour.objects.filter(Date__gte=datetime.date.today())
+    revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    expenses = Expend.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
     total_revenue = 0
     total_expense = 0
     total_labour = 0
@@ -246,3 +251,33 @@ def pdf(request):
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename=date+'.pdf')
 
+def crsl(request):
+    return render(request,'crsl.html')
+
+def history(request):
+    revenues = Revenue.objects.filter(user=request.user).order_by('-Date', '-Time')
+    expenses = Expend.objects.filter(user=request.user).order_by('-Date', '-Time')
+    labours = Labour.objects.filter(user=request.user).order_by('-Date', '-Time')
+    total_rev = 0
+    total_ex = 0
+    total_lb = 0
+    for rev in revenues:
+        total_rev += float(rev.PriceAmount)
+    for ex in expenses:
+        total_ex += float(ex.PriceAmount)
+    for lb in labours:
+        total_lb += float(lb.PriceAmount)
+    profit = float(total_rev) - float(total_ex) - float(total_lb)
+    return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit})
+    # if request.method =='POST':
+    #     start_date = request.POST.get['start_date']
+    #     end_date = request.POST.get['end_date']
+    #     xrevs = Revenue.objects.filter(Date__gte=start_date,Date__lte=end_date)
+    #     # xrevs = Revenue.objects.raw('select PriceAmount from Revenue where Date between "'+start_date+'"and'+ end_date +'"' )
+    #     return render(request, 'history.html', {'xrevs': xrevs})
+    # else:
+    #     return render(request,'history.html')
+    #     # startdate = date.today() get from post method
+    #     # enddate = startdate + timedelta(days=6) get also from post method
+    #     # try to create a list to act as the date__range variable
+    #     # Sample.objects.filter(date__range=[startdate, enddate])

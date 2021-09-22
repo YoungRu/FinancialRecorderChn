@@ -12,6 +12,8 @@ urlpatterns = [
     path('exdelete/<int:pk>', views.Exdelete, name='Exdelete'),
     path('ladelete/<int:pk>', views.Ladelete, name='Ladelete'),
     path('pdf/', views.pdf, name='pdf'),
+    path('crsl/', views.crsl, name='crsl'),
+    path('history/', views.history, name='history'),
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,
