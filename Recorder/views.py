@@ -9,6 +9,7 @@ from .forms import LabourForm
 from .models import Revenue
 from .models import Expend
 from .models import Labour
+from datetime import date
 import datetime
 import requests
 import io
@@ -252,9 +253,10 @@ def crsl(request):
     return render(request,'crsl.html')
 
 def history(request):
-    revenues = Revenue.objects.filter(user=request.user).order_by('-Date', '-Time')
-    expenses = Expend.objects.filter(user=request.user).order_by('-Date', '-Time')
-    labours = Labour.objects.filter(user=request.user).order_by('-Date', '-Time')
+    today = date.today()
+    revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+    expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+    labours = Labour.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
     total_rev = 0
     total_ex = 0
     total_lb = 0
