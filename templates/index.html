@@ -117,12 +117,14 @@
         </div>
      </div>
 </div>
-<br><br>
-<div class="text-center">
-<form method="POST">
-    {% csrf_token %}
-    <input class='info' type="submit" name="end" value="今日表现"/>
-</form>
+<br><br><br><br>
+<div class="container">
+    <div class="col-sm-6 text-left">
+        <button><a href="{% url 'total' %}"> 今日表现 </a></button>
+    </div>
+    <div class="col-sm-6 text-right">
+        <button><a href="{% url 'history' %}"> 历史记录 </a></button>
+    </div>
 </div>
 {% else %}
 <div class="text-center w3-animate-opacity"><h2 class="message">你必须登录才能使用</h2></div>
