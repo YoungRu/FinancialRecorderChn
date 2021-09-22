@@ -55,7 +55,7 @@
             <h5> 总收入: </h5><h3> RM{{ total_rev }}  </h3>
             <hr>
             {% for rv in revs %}
-            <h5>  {{ rv.PriceAmount }} - {{ rv.UnitNumber }} - {{ rv.PayerName }}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
+            <h5>  RM{{ rv.PriceAmount }} - {{ rv.PayerName }} - {{ rv.UnitNumber }}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
             {% endfor %}
             <br>
         </div>
@@ -66,7 +66,7 @@
             <h5> 总开销: </h5><h3> RM{{ total_ex }}  </h3>
             <hr>
             {% for ex in exs %}
-            <h5>  {{ ex.PriceAmount }}- {{ ex.UnitNumber }} - {{ ex.PayerName }}- {{ ex.Date|date:'m-j-Y' }} - {% if ex.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %} </h5>
+            <h5>  RM{{ ex.PriceAmount }}- {{ ex.Supplier }} - {{ ex.Date|date:'m-j-Y' }} - {% if ex.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %} </h5>
             {% endfor %}
             <br>
         </div>
@@ -77,7 +77,7 @@
             <h5> 总人工: </h5><h3> RM{{ total_lb }}  </h3>
             <hr>
             {% for lb in lbs %}
-            <h5>   {{ lb.PriceAmount }} - {{ lb.UnitNumber }} - {{ lb.PayerName }}- {{ lb.Date|date:'m-j-Y' }} - {% if lb.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
+            <h5>   RM{{ lb.PriceAmount }} - {{ lb.LabourName }} - {{ lb.Date|date:'m-j-Y' }}</h5>
             {% endfor %}
             <br>
         </div>
