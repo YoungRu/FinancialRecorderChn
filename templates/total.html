@@ -10,6 +10,19 @@
 </head>
 <body>
 <style>
+    h1 {
+    color: black;
+    font-size: 450%;
+    }
+    h2{
+    font-size: 300%;
+    }
+    h3{
+    font-size:250%;
+    }
+    h5{
+    font-size: 200%;
+    }
     .lightgreen{
     background-color: rgba(10, 255, 78, 0.36);
     }
@@ -20,10 +33,10 @@
     background-color: rgba(255, 123, 0, 0.35);
     }
     .fas {
-    font-size: 50px;
+    font-size: 700%;
     }
-    .icon {
-    font-size: 15px;
+    .icon{
+    font-size: 100%;
     }
     h1{
     color: black;
@@ -53,7 +66,10 @@
     color: orange;
     }
     .chart-center{
-    margin-left:38%
+    margin-left:27%
+    }
+    button{
+    font-size: 250%;
     }
 </style>
 <h1 class="text-center">今日表现</h1>
@@ -65,8 +81,8 @@
 </div>
 <div class="text-center">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div class="chart-center" style="width:25%">
-<canvas id="myChart" width="50" height="50" ></canvas>
+<div class="chart-center" style="width:50%">
+<canvas id="myChart"></canvas>
 </div>
 <script>
 var ctx = document.getElementById('myChart').getContext('2d');
