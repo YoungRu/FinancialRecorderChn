@@ -34,3 +34,7 @@ class Labour(models.Model):
 
     def __str__(self):
         return str(self.LabourName)
+
+class History(models.Model):
+    From_Date = models.DateField(null=True)
+    Until_Date = models.DateField(null=True)

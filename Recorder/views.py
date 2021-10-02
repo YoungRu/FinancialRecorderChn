@@ -3,13 +3,14 @@ from django.db.models.functions import Now
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.conf import settings
-from .forms import RevenueForm
+from .forms import RevenueForm, HistoryForm
 from .forms import ExpendForm
 from .forms import LabourForm
 from .models import Revenue
 from .models import Expend
 from .models import Labour
 from datetime import date
+from django.db.models import Q
 import datetime
 import requests
 import io
@@ -253,30 +254,26 @@ def crsl(request):
     return render(request,'crsl.html')
 
 def history(request):
-    today = date.today()
-    revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-    expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-    labours = Labour.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-    total_rev = 0
-    total_ex = 0
-    total_lb = 0
-    for rev in revenues:
-        total_rev += float(rev.PriceAmount)
-    for ex in expenses:
-        total_ex += float(ex.PriceAmount)
-    for lb in labours:
-        total_lb += float(lb.PriceAmount)
-    profit = float(total_rev) - float(total_ex) - float(total_lb)
-    return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit})
-    # if request.method =='POST':
-    #     start_date = request.POST.get['start_date']
-    #     end_date = request.POST.get['end_date']
-    #     xrevs = Revenue.objects.filter(Date__gte=start_date,Date__lte=end_date)
-    #     # xrevs = Revenue.objects.raw('select PriceAmount from Revenue where Date between "'+start_date+'"and'+ end_date +'"' )
-    #     return render(request, 'history.html', {'xrevs': xrevs})
+    if request.method == 'GET':
+        # HForm = HistoryForm()
+        today = date.today()
+        revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        labours = Labour.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        total_rev = 0
+        total_ex = 0
+        total_lb = 0
+        for rev in revenues:
+            total_rev += float(rev.PriceAmount)
+        for ex in expenses:
+            total_ex += float(ex.PriceAmount)
+        for lb in labours:
+            total_lb += float(lb.PriceAmount)
+        profit = float(total_rev) - float(total_ex) - float(total_lb)
+        return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit})
     # else:
-    #     return render(request,'history.html')
-    #     # startdate = date.today() get from post method
-    #     # enddate = startdate + timedelta(days=6) get also from post method
-    #     # try to create a list to act as the date__range variable
-    #     # Sample.objects.filter(date__range=[startdate, enddate])
+    #     From_Date = request.POST.get('From_Date')
+    #     # Until_Date = request.POST.get('Until_Date')
+    #     xrevs = Revenue.objects.filter(Date__gte=From_Date)
+    #     str(xrevs)
+    #     return render(request, 'history.html', {'xrevs': xrevs})
