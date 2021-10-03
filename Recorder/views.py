@@ -277,4 +277,14 @@ def history(request):
          xrevs = Revenue.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
          xexs = Expend.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
          xlbs = Labour.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
-         return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs})
+         total_xrev = 0
+         total_xex = 0
+         total_xlb = 0
+         for xrev in xrevs:
+             total_xrev += float(xrev.PriceAmount)
+         for xex in xexs:
+             total_xex += float(xex.PriceAmount)
+         for xlb in xlbs:
+             total_xlb += float(xlb.PriceAmount)
+         xprofit = float(total_xrev) - float(total_xex) - float(total_xlb)
+         return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb, 'xprofit':xprofit})

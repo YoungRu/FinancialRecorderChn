@@ -36,6 +36,15 @@
     background-image: url("https://i.ytimg.com/vi/Eo9qB-vqSiQ/maxresdefault.jpg");
     background-size: cover;
     }
+    #xprofit{
+    color: black;
+    margin-top:0px;
+    padding-top:20px;
+    padding-bottom:20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    background-image: url("https://i.ytimg.com/vi/Eo9qB-vqSiQ/maxresdefault.jpg");
+    background-size: cover;
+    }
     .col-lg-4{
     margin: 20px 0 10px 0;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
@@ -61,7 +70,7 @@
 </div>
 <br><br>
 <div class="text-center  w3-animate-zoom">
-<h2>总毛利润</h2>
+<h2>本月毛利润</h2>
 <h1 id="profit"><strong>RM{{ profit }}</strong></h1>
 <br><br>
 </div>
@@ -69,9 +78,9 @@
     <div class="row" >
         <div class="col-lg-4 col-xs-4 text-center">
             <br>
-            <h2> 收入历史 </h2>
+            <h2> 本月收入历史 </h2>
             <hr>
-            <h5> 总收入: </h5><h3> RM{{ total_rev }}  </h3>
+            <h5> 本月总收入: </h5><h3> RM{{ total_rev }}  </h3>
             <hr>
             {% for rv in revs %}
             <h5>  RM{{ rv.PriceAmount }} {% if rv.PayerName %} - {{ rv.PayerName }} {% else %}{% endif %} {% if rv.UnitNumber %} - {{ rv.UnitNumber }} {% else %}{% endif %}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
@@ -80,9 +89,9 @@
         </div>
         <div class="col-lg-4 col-xs-4 text-center">
             <br>
-            <h2> 开销历史 </h2>
+            <h2> 本月开销历史 </h2>
             <hr>
-            <h5> 总开销: </h5><h3> RM{{ total_ex }}  </h3>
+            <h5> 本月总开销: </h5><h3> RM{{ total_ex }}  </h3>
             <hr>
             {% for ex in exs %}
             <h5>  RM{{ ex.PriceAmount }}- {{ ex.Supplier }} - {{ ex.Date|date:'m-j-Y' }} - {% if ex.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %} </h5>
@@ -91,9 +100,9 @@
         </div>
         <div class="col-lg-4 col-xs-4 text-center">
             <br>
-            <h2> 人工历史 </h2>
+            <h2> 本月人工历史 </h2>
             <hr>
-            <h5> 总人工: </h5><h3> RM{{ total_lb }}  </h3>
+            <h5> 本月总人工: </h5><h3> RM{{ total_lb }}  </h3>
             <hr>
             {% for lb in lbs %}
             <h5>   RM{{ lb.PriceAmount }} - {{ lb.LabourName }} - {{ lb.Date|date:'m-j-Y' }}</h5>
@@ -118,11 +127,18 @@
 <div class="text-center" >
     <h3>HISTORY DATA FROM</h3> <h5> {{From_Date}}<strong> -- </strong>{{Until_Date}} </h5>
 </div>
+<div class="text-center  w3-animate-zoom">
+    <h2>总历史毛利润</h2>
+    <h1 id="xprofit"><strong>RM{{ xprofit }}</strong></h1>
+<br><br>
+</div>
 <div class="container-fluid" >
     <div class="row" >
         <div class="Rhistory col-lg-4 col-xs-4 text-center" >
             <br>
             <h2> 收入历史 </h2>
+            <hr>
+            <h5> 总收入: </h5><h3> RM{{ total_xrev }}  </h3>
             <hr>
             {% for rv in xrevs %}
             <h5>  RM{{ rv.PriceAmount }} {% if rv.PayerName %} - {{ rv.PayerName }} {% else %}{% endif %} {% if rv.UnitNumber %} - {{ rv.UnitNumber }} {% else %}{% endif %}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
@@ -133,6 +149,8 @@
             <br>
             <h2> 开销历史 </h2>
             <hr>
+            <h5> 总开销: </h5><h3> RM{{ total_xex }}  </h3>
+            <hr>
             {% for ex in xexs %}
             <h5>  RM{{ ex.PriceAmount }}- {{ ex.Supplier }} - {{ ex.Date|date:'m-j-Y' }} - {% if ex.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %} </h5>
             {% endfor %}
@@ -141,6 +159,8 @@
         <div class="Rhistory col-lg-4 col-xs-4 text-center">
             <br>
             <h2> 人工历史 </h2>
+            <hr>
+            <h5> 总人工: </h5><h3> RM{{ total_xlb }}  </h3>
             <hr>
             {% for lb in xlbs %}
             <h5>   RM{{ lb.PriceAmount }} - {{ lb.LabourName }} - {{ lb.Date|date:'m-j-Y' }}</h5>
