@@ -103,7 +103,7 @@
     <div class="col-lg-4 col-xs-12 col-sm-12 text-center" id="formdiv">
         <div class="inside">
 <h2 class="rev">收入</h2>
-<form  method="POST" enctype="multipart/form-data" >
+<form  method="POST" enctype="multipart/form-data" autocomplete="on">
 {% csrf_token %}
     {{ RForm.as_p }}
 <input type="submit" name="revenue" value="确定"/>
@@ -113,7 +113,7 @@
     <div class="col-lg-4 col-xs-12 col-sm-12 text-center" id="formdiv2">
         <div class="inside">
 <h2 class="ex">开销</h2>
-<form  method="POST" enctype="multipart/form-data" >
+<form  method="POST" enctype="multipart/form-data" autocomplete="on">
 {% csrf_token %}
     {{ EForm.as_p }}
 <input type="submit" name="expend" value="确定"/>
@@ -124,7 +124,7 @@
         <div class="col-lg-4 col-xs-12 col-sm-12 text-center">
         <div class="inside">
 <h2 class="lb">人工</h2>
-<form  method="POST" enctype="multipart/form-data">
+<form  method="POST" enctype="multipart/form-data" autocomplete="on">
 {% csrf_token %}
     {{ LForm.as_p }}
 <input type="submit" name="labour" value="确定"/>

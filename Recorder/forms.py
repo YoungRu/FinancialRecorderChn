@@ -21,7 +21,7 @@ class ExpendForm(ModelForm):
 
         widgets = {
             'PriceAmount': forms.TextInput(attrs={'class': 'form-control', 'rows': 1 , 'autocomplete':"off"}),
-            'Supplier': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+            'Supplier': forms.Textarea(attrs={'class': 'form-control', 'rows': 1, 'autocomplete':"on"}),
 
        }
 
@@ -33,7 +33,7 @@ class LabourForm(ModelForm):
 
         widgets = {
             'PriceAmount': forms.TextInput(attrs={'class': 'form-control', 'rows': 1, 'autocomplete':"off"}),
-            'LabourName': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+            'LabourName': forms.Textarea(attrs={'class': 'form-control', 'rows': 1, 'autocomplete':"on"}),
         }
 
 class HistoryForm(ModelForm):
