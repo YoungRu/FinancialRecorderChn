@@ -42,6 +42,6 @@ class HistoryForm(ModelForm):
         fields = ['From_Date', 'Until_Date']
 
         widgets = {
-            'From_Date': forms.DateInput(format='%b. %d, %Y'),
-            'Until_Date': forms.DateInput(format='%b. %d, %Y'),
+            'From_Date': forms.SelectDateWidget(),
+            'Until_Date': forms.SelectDateWidget(),
         }

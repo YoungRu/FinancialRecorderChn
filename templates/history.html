@@ -43,6 +43,13 @@
     background-repeat: no-repeat;
     background-size: cover;
     }
+    .Rhistory{
+    margin: 20px 0 10px 0;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    background-image: url("https://ak.picdn.net/shutterstock/videos/14444278/thumb/1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    }
         button{
     font-size: 250%;
     }
@@ -99,15 +106,48 @@
      <a href="{% url 'index' %}" ><button> 返回主页</button></a>
     </div>
 </div>
-<!--<form method="POST">-->
-<!--    {% csrf_token %}-->
-<!--    {{ HForm }}-->
-<!--    <input type="submit" >-->
-<!--</form>-->
-<!--<div>-->
-<!--    {% for xrev in xrevs %}-->
-<!--    {{ xrev }}-->
-<!--    {% endfor %}-->
-<!--</div>-->
+<hr>
+<div class="text-center">
+    <form method="POST">
+        {% csrf_token %}
+        <input type="date" name="From_Date" value="From_Date">
+        <input type="date" name="Until_Date" value="Until_Date">
+        <input type="submit" >
+    </form>
+</div>
+<div class="text-center" >
+    <h3>HISTORY DATA FROM</h3> <h5> {{From_Date}}<strong> -- </strong>{{Until_Date}} </h5>
+</div>
+<div class="container-fluid" >
+    <div class="row" >
+        <div class="Rhistory col-lg-4 col-xs-4 text-center" >
+            <br>
+            <h2> 收入历史 </h2>
+            <hr>
+            {% for rv in xrevs %}
+            <h5>  RM{{ rv.PriceAmount }} {% if rv.PayerName %} - {{ rv.PayerName }} {% else %}{% endif %} {% if rv.UnitNumber %} - {{ rv.UnitNumber }} {% else %}{% endif %}- {{ rv.Date|date:'m-j-Y' }} - {% if rv.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %}  </h5>
+            {% endfor %}
+            <br>
+        </div>
+        <div class="Rhistory col-lg-4 col-xs-4 text-center">
+            <br>
+            <h2> 开销历史 </h2>
+            <hr>
+            {% for ex in xexs %}
+            <h5>  RM{{ ex.PriceAmount }}- {{ ex.Supplier }} - {{ ex.Date|date:'m-j-Y' }} - {% if ex.Doc %} <a href="{{revenue.Doc.url}}"> Doc </a>{% else %}no Doc {% endif %} </h5>
+            {% endfor %}
+            <br>
+        </div>
+        <div class="Rhistory col-lg-4 col-xs-4 text-center">
+            <br>
+            <h2> 人工历史 </h2>
+            <hr>
+            {% for lb in xlbs %}
+            <h5>   RM{{ lb.PriceAmount }} - {{ lb.LabourName }} - {{ lb.Date|date:'m-j-Y' }}</h5>
+            {% endfor %}
+            <br>
+        </div>
+    </div>
+</div>
 </body>
 </html>

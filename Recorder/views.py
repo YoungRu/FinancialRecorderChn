@@ -255,7 +255,7 @@ def crsl(request):
 
 def history(request):
     if request.method == 'GET':
-        # HForm = HistoryForm()
+        HForm = HistoryForm()
         today = date.today()
         revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
         expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
@@ -270,10 +270,11 @@ def history(request):
         for lb in labours:
             total_lb += float(lb.PriceAmount)
         profit = float(total_rev) - float(total_ex) - float(total_lb)
-        return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit})
-    # else:
-    #     From_Date = request.POST.get('From_Date')
-    #     # Until_Date = request.POST.get('Until_Date')
-    #     xrevs = Revenue.objects.filter(Date__gte=From_Date)
-    #     str(xrevs)
-    #     return render(request, 'history.html', {'xrevs': xrevs})
+        return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit, 'HForm':HForm})
+    else:
+         From_Date = request.POST['From_Date']
+         Until_Date = request.POST['Until_Date']
+         xrevs = Revenue.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+         xexs = Expend.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+         xlbs = Labour.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+         return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexpenses':xexs, 'xlabs':xlbs})
