@@ -272,19 +272,33 @@ def history(request):
         profit = float(total_rev) - float(total_ex) - float(total_lb)
         return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit, 'HForm':HForm})
     else:
-         From_Date = request.POST['From_Date']
-         Until_Date = request.POST['Until_Date']
-         xrevs = Revenue.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
-         xexs = Expend.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
-         xlbs = Labour.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
-         total_xrev = 0
-         total_xex = 0
-         total_xlb = 0
-         for xrev in xrevs:
-             total_xrev += float(xrev.PriceAmount)
-         for xex in xexs:
-             total_xex += float(xex.PriceAmount)
-         for xlb in xlbs:
-             total_xlb += float(xlb.PriceAmount)
-         xprofit = float(total_xrev) - float(total_xex) - float(total_xlb)
-         return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb, 'xprofit':xprofit})
+        today = date.today()
+        revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        labours = Labour.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        total_rev = 0
+        total_ex = 0
+        total_lb = 0
+        for rev in revenues:
+            total_rev += float(rev.PriceAmount)
+        for ex in expenses:
+            total_ex += float(ex.PriceAmount)
+        for lb in labours:
+            total_lb += float(lb.PriceAmount)
+        profit = float(total_rev) - float(total_ex) - float(total_lb)
+        From_Date = request.POST['From_Date']
+        Until_Date = request.POST['Until_Date']
+        xrevs = Revenue.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+        xexs = Expend.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+        xlbs = Labour.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+        total_xrev = 0
+        total_xex = 0
+        total_xlb = 0
+        for xrev in xrevs:
+            total_xrev += float(xrev.PriceAmount)
+        for xex in xexs:
+            total_xex += float(xex.PriceAmount)
+        for xlb in xlbs:
+            total_xlb += float(xlb.PriceAmount)
+        xprofit = float(total_xrev) - float(total_xex) - float(total_xlb)
+        return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb, 'xprofit':xprofit, 'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit})
