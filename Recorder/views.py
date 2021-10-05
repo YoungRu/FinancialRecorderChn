@@ -270,7 +270,8 @@ def history(request):
         for lb in labours:
             total_lb += float(lb.PriceAmount)
         profit = float(total_rev) - float(total_ex) - float(total_lb)
-        return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit, 'HForm':HForm})
+        Roundoff_Profit = format(profit, '.2f')
+        return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'RFprofit':Roundoff_Profit, 'HForm':HForm})
     else:
         today = date.today()
         revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
@@ -286,6 +287,7 @@ def history(request):
         for lb in labours:
             total_lb += float(lb.PriceAmount)
         profit = float(total_rev) - float(total_ex) - float(total_lb)
+        Roundoff_Profit = format(profit, '.2f')
         From_Date = request.POST['From_Date']
         Until_Date = request.POST['Until_Date']
         xrevs = Revenue.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
@@ -301,4 +303,5 @@ def history(request):
         for xlb in xlbs:
             total_xlb += float(xlb.PriceAmount)
         xprofit = float(total_xrev) - float(total_xex) - float(total_xlb)
-        return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb, 'xprofit':xprofit, 'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'profit':profit})
+        Roundoff_XProfit = format(xprofit, '.2f')
+        return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb, 'RFXprofit':Roundoff_XProfit, 'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'RFprofit':Roundoff_Profit})
