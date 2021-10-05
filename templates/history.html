@@ -62,6 +62,9 @@
         button{
     font-size: 250%;
     }
+    #date_form{
+    font-size: 160%;
+    }
 </style>
 <div class="row" id="head">
   <div class="col-xs-4 col-sm-4 col-md-4">  <h1>欢迎,</h1> <h3>{{ user.username|capfirst }} </h3></div>
@@ -78,7 +81,7 @@
     <div class="row" >
         <div class="col-lg-4 col-xs-4 text-center">
             <br>
-            <h2> 本月收入历史 </h2>
+            <h2> 本月收入 </h2>
             <hr>
             <h5> 本月总收入: </h5><h3> RM{{ total_rev }}  </h3>
             <hr>
@@ -89,7 +92,7 @@
         </div>
         <div class="col-lg-4 col-xs-4 text-center">
             <br>
-            <h2> 本月开销历史 </h2>
+            <h2> 本月开销 </h2>
             <hr>
             <h5> 本月总开销: </h5><h3> RM{{ total_ex }}  </h3>
             <hr>
@@ -100,7 +103,7 @@
         </div>
         <div class="col-lg-4 col-xs-4 text-center">
             <br>
-            <h2> 本月人工历史 </h2>
+            <h2> 本月人工 </h2>
             <hr>
             <h5> 本月总人工: </h5><h3> RM{{ total_lb }}  </h3>
             <hr>
@@ -117,15 +120,15 @@
 </div>
 <hr>
 <div class="text-center">
-    <form method="POST">
+    <form method="POST" id="date_form">
         {% csrf_token %}
         <input type="date" name="From_Date" value="From_Date">
         <input type="date" name="Until_Date" value="Until_Date">
-        <input type="submit" >
+        <input type="submit" value="确定">
     </form>
 </div>
 <div class="text-center" >
-    <h3>HISTORY DATA FROM</h3> <h5> {{From_Date}}<strong> -- </strong>{{Until_Date}} </h5>
+    <h3>HISTORY DATA FROM</h3> <h5> {{From_Date}}<strong> - TO - </strong>{{Until_Date}} </h5>
 </div>
 <div class="text-center  w3-animate-zoom">
     <h2>总历史毛利润</h2>
