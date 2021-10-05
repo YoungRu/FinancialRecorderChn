@@ -41,10 +41,12 @@
     }
     body{
     background-color: white;
-    background-image: url("https://wallpaperaccess.com/full/5820291.jpg");
-    background-repeat: repeat;
-    background-size: cover;
+    background-image: url("https://images.unsplash.com/photo-1540845692348-b9d2bc813a63?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bWluaW1hbCUyMGZsb3dlcnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80");
+    background-repeat: no-repeat;
+    background-size: fit;
+    position: relative;
     }
+    
     #formdiv{
     margin-bottom: 10%;
     }
@@ -85,6 +87,7 @@
     }
 </style>
 {% if user.is_authenticated %}
+<div class="background"></div>
 <div class="row" id="head">
   <div class="col-sm-4 col-md-4">  <h1>欢迎,</h1> <h3>{{ user.username|capfirst }} </h3></div>
   <div class="col-sm-4 col-md-4"><h1 class="text-center">营业记录</h1></div>
