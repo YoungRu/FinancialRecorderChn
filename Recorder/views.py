@@ -13,6 +13,7 @@ from datetime import date
 from django.db.models import Q
 import datetime
 import requests
+import csv
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -273,6 +274,9 @@ def history(request):
         Roundoff_Profit = format(profit, '.2f')
         return render(request, 'history.html', {'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'RFprofit':Roundoff_Profit, 'HForm':HForm})
     else:
+        global xrevs
+        global xexs
+        global xlbs
         today = date.today()
         revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
         expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
@@ -304,4 +308,50 @@ def history(request):
             total_xlb += float(xlb.PriceAmount)
         xprofit = float(total_xrev) - float(total_xex) - float(total_xlb)
         Roundoff_XProfit = format(xprofit, '.2f')
-        return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs, 'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb, 'RFXprofit':Roundoff_XProfit, 'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,'total_ex':total_ex,'total_lb':total_lb, 'RFprofit':Roundoff_Profit})
+        return render(request, 'history.html', {'From_Date':From_Date, 'Until_Date':Until_Date, 'xrevs':xrevs, 'xexs':xexs,
+                                                'xlbs':xlbs, 'total_xrev':total_xrev,'total_xex':total_xex,'total_xlb':total_xlb,
+                                                'RFXprofit':Roundoff_XProfit, 'revs':revenues, 'exs':expenses, 'lbs':labours,'total_rev':total_rev,
+                                                'total_ex':total_ex,'total_lb':total_lb, 'RFprofit':Roundoff_Profit})
+
+def period_record_csv(request):
+    response = HttpResponse(content_type='text/csv',
+                            headers={'Content-Disposition': 'attachment; filename="business_activities.csv"'})
+    writer = csv.writer(response)
+    pxrevs = xrevs
+    pxexes = xexs
+    pxlbs = xlbs
+    writer.writerow(['REVENUES'])
+    writer.writerow(['', 'Price', 'UnitNumber', 'PayerName', 'Date', 'user'])
+    for pxrev in pxrevs:
+        writer.writerow(['', pxrev.PriceAmount, pxrev.UnitNumber, pxrev.PayerName, pxrev.Date, pxrev.user])
+    writer.writerow(['EXPENSES'])
+    writer.writerow(['', 'Price', 'Supplier', 'Date'])
+    for pxexp in pxexes:
+        writer.writerow(['', pxexp.PriceAmount, pxexp.Supplier, pxexp.Date])
+    writer.writerow(['LABOURS'])
+    writer.writerow(['', 'Price', 'Labour Name', 'Date'])
+    for pxlb in pxlbs:
+        writer.writerow(['', pxlb.PriceAmount, pxlb.LabourName, pxlb.Date])
+    return response
+
+
+def record_csv(request):
+    response = HttpResponse(content_type='text/csv',headers={'Content-Disposition': 'attachment; filename="revenue.csv"'})
+    writer = csv.writer(response)
+    expenses = Expend.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    writer.writerow(['','Price', 'UnitNumber','PayerName','Date','user'])
+    for rev in revenues:
+        writer.writerow(['', rev.PriceAmount, rev.UnitNumber, rev.PayerName,rev.Date,rev.user ])
+    writer.writerow(['NEXT ROW'])
+    writer.writerow(['', 'Price', 'Supplier', 'Date'])
+    for exp in expenses:
+        writer.writerow(['', exp.PriceAmount, exp.Supplier, exp.Date])
+    writer.writerow(['NEXT ROW'])
+    writer.writerow(['', 'Price', 'Labour Name', 'Date'])
+    for lb in labours:
+        writer.writerow(['', lb.PriceAmount, lb.LabourName, lb.Date])
+    return response
+
+

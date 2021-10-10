@@ -33,7 +33,7 @@
     background-color: rgba(255, 123, 0, 0.35);
     }
     .fas {
-    font-size: 700%;
+    font-size: 450%;
     }
     .icon{
     font-size: 100%;
@@ -158,7 +158,9 @@ var myChart = new Chart(ctx, {
     </div>
 <br><br>
 <div class="text-center">
-<a href="{% url 'pdf' %}"><i class="fas fa-file-pdf"></i><h5>下载今日表现</h5></a>
+    <h4>下载今日表现</h4>
+    <a href="{% url 'pdf' %}"><i class="fas fa-file-pdf"><h6>pdf file</h6></i></a>
+    <a href="{% url 'record_csv' %}"><i class="fas fa-solid fa-file-excel"><h6>csv file</h6></i></a>
 </div>
     <br><br>
 <div class="text-center">

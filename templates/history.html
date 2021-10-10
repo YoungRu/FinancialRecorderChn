@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="https://kit.fontawesome.com/da288a76e0.js" crossorigin="anonymous"></script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -64,6 +65,9 @@
     }
     #date_form{
     font-size: 160%;
+    }
+    .fas{
+    font-size: 200%;
     }
 </style>
 <div class="row" id="head">
@@ -131,7 +135,7 @@
     <h3>HISTORY DATA FROM</h3> <h5> {{From_Date}}<strong> - TO - </strong>{{Until_Date}} </h5>
 </div>
 <div class="text-center  w3-animate-zoom">
-    <h2>总历史毛利润</h2>
+    <h2>总历史毛利润</h2><a href="{% url 'period_record_csv' %}" ><i class="fas fa-solid fa-file-excel"><h6>csv file</h6></i></a>
     <h1 id="xprofit"><strong>RM{{ RFXprofit }}</strong></h1>
 <br><br>
 </div>
