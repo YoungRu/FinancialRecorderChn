@@ -63,6 +63,9 @@
         button{
     font-size: 250%;
     }
+    #dateerror{
+    color:red;
+    }
     #date_form{
     font-size: 160%;
     }
@@ -123,6 +126,11 @@
     </div>
 </div>
 <hr>
+{% if messages %}
+    {% for message in messages %}
+        <h5 class="text-center w3-animate-opacity" id="dateerror">{{message}}!!!</h5>
+    {% endfor %}
+{% endif %}
 <div class="text-center">
     <form method="POST" id="date_form">
         {% csrf_token %}
