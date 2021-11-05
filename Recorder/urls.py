@@ -16,6 +16,7 @@ urlpatterns = [
     path('history/', views.history, name='history'),
     path('record_csv/', views.record_csv, name='record_csv'),
     path('period_record_csv/', views.period_record_csv, name='period_record_csv'),
+    path('overview/', views.overview, name='overview')
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,

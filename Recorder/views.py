@@ -23,6 +23,18 @@ from reportlab.lib.pagesizes import letter
 from django.core.mail import send_mail
 from PIL import Image
 # Create your views here.
+
+
+def data_filter(model, date, user, period='day'):
+    if period == 'day':
+        data = model.objects.filter(Date__gte=date, user=user)
+        return data
+    elif period == 'month':
+        data = model.objects.filter(Date__month=date, user=user)
+        return data
+
+
+
 def index(request):
     if request.method == 'GET':
         RForm = RevenueForm()
@@ -114,9 +126,9 @@ def Ladelete(request, pk):
 def total(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-            expenses = Expend.objects.filter(Date__gte=datetime.date.today(),user=request.user)
-            labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+            revenues = data_filter(Revenue, datetime.date.today(), request.user)
+            expenses = data_filter(Expend, datetime.date.today(), request.user)
+            labours = data_filter(Labour, datetime.date.today(), request.user)
             rev_num = 0
             ex_num = 0
             la_num = 0
@@ -145,9 +157,9 @@ def total(request):
         emaillist = []
         usersmail = request.user.email
         emaillist.append(usersmail)
-        revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-        expenses = Expend.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-        labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+        revenues = data_filter(Revenue, datetime.date.today(), request.user)
+        expenses = data_filter(Expend, datetime.date.today(), request.user)
+        labours = data_filter(Labour, datetime.date.today(), request.user)
         total_revenue = 0
         total_expense = 0
         total_labour = 0
@@ -176,9 +188,9 @@ def pdf(request):
     textob = p.beginText()
     textob.setTextOrigin(inch, inch)
     textob.setFont('Helvetica', 14)
-    revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-    expenses = Expend.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-    labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    revenues = data_filter(Revenue, datetime.date.today(), request.user)
+    expenses = data_filter(Expend, datetime.date.today(), request.user)
+    labours = data_filter(Labour, datetime.date.today(), request.user)
     total_revenue = 0
     total_expense = 0
     total_labour = 0
@@ -318,6 +330,7 @@ def history(request):
             messages.info(request, 'Please insert Date Period')
             return redirect('history')
 
+
 def period_record_csv(request):
     try:
         response = HttpResponse(content_type='text/csv',
@@ -347,9 +360,9 @@ def period_record_csv(request):
 def record_csv(request):
     response = HttpResponse(content_type='text/csv',headers={'Content-Disposition': 'attachment; filename="revenue.csv"'})
     writer = csv.writer(response)
-    expenses = Expend.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-    labours = Labour.objects.filter(Date__gte=datetime.date.today(), user=request.user)
-    revenues = Revenue.objects.filter(Date__gte=datetime.date.today(), user=request.user)
+    revenues = data_filter(Revenue, datetime.date.today(), request.user)
+    expenses = data_filter(Expend, datetime.date.today(), request.user)
+    labours = data_filter(Labour, datetime.date.today(), request.user)
     writer.writerow(['','Price', 'UnitNumber','PayerName','Date','user'])
     for rev in revenues:
         writer.writerow(['', rev.PriceAmount, rev.UnitNumber, rev.PayerName,rev.Date,rev.user ])
@@ -364,3 +377,19 @@ def record_csv(request):
     return response
 
 
+def overview(request):
+    if request.method == 'GET':
+        today = date.today()
+        revenues = data_filter(Revenue, today.month, request.user, 'month').order_by('-Date', '-Time')
+        weekdays = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0}
+        for rev in revenues:
+            for day in weekdays:
+                if str(rev.Date.weekday()) == day:
+                    weekdays[day] += int(rev.PriceAmount)
+
+
+        profits = []
+        for day in weekdays:
+            profits.append(weekdays[day])
+
+        return render(request, 'overview.html',{'weekdays':weekdays,'profits': profits})
