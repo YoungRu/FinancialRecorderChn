@@ -380,21 +380,16 @@ def record_csv(request):
 def overview(request):
     if request.method == 'GET':
         today = date.today()
-        # revenues = data_filter(Revenue, today.month, request.user, 'month').order_by('-Date', '-Time')
-        revenues = Revenue.objects.all()
+        revenues = data_filter(Revenue, today.month, request.user, 'month').order_by('-Date', '-Time')
         weekdays = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0}
         for rev in revenues:
             for day in weekdays:
-                i = 0
                 if str(rev.Date.weekday()) == day:
-                    i += 1
                     weekdays[day] += int(rev.PriceAmount)
-                    for day in weekdays:
-                        weekdays[day] = weekdays[day]/i
 
 
-        Avg_profits = []
+        profits = []
         for day in weekdays:
-            Avg_profits.append(weekdays[day])
+            profits.append(weekdays[day])
 
-        return render(request, 'overview.html',{'weekdays':weekdays,'Avg_profits': Avg_profits})
+        return render(request, 'overview.html',{'weekdays':weekdays,'profits': profits})
