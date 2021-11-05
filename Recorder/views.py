@@ -384,12 +384,16 @@ def overview(request):
         weekdays = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0}
         for rev in revenues:
             for day in weekdays:
+                i = 0
                 if str(rev.Date.weekday()) == day:
+                    i += 1
                     weekdays[day] += int(rev.PriceAmount)
+                    for day in weekdays:
+                        weekdays[day] = weekdays[day]/i
 
 
-        profits = []
+        Avg_profits = []
         for day in weekdays:
-            profits.append(weekdays[day])
+            Avg_profits.append(weekdays[day])
 
-        return render(request, 'overview.html',{'weekdays':weekdays,'profits': profits})
+        return render(request, 'overview.html',{'weekdays':weekdays,'Avg_profits': Avg_profits})
