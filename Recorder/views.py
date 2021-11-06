@@ -34,6 +34,11 @@ def data_filter(model, date, user, period='day'):
         return data
 
 
+def append_to_list(dictionary, list_to_append):
+    for i in dictionary:
+        list_to_append.append(dictionary[i])
+    return list_to_append
+
 
 def index(request):
     if request.method == 'GET':
@@ -103,19 +108,23 @@ def login(request):
     else:
         return render(request, 'login.html')
 
+
 def logout(request):
     auth.logout(request)
     return redirect('index')
+
 
 def Redelete(request, pk):
     obj = get_object_or_404(Revenue, pk=pk, user=request.user)
     obj.delete()
     return redirect('total')
 
+
 def Exdelete(request, pk):
     obj = get_object_or_404(Expend, pk=pk, user=request.user)
     obj.delete()
     return redirect('total')
+
 
 def Ladelete(request, pk):
     obj = get_object_or_404(Labour, pk=pk, user=request.user)
@@ -271,9 +280,9 @@ def history(request):
     if request.method == 'GET':
         HForm = HistoryForm()
         today = date.today()
-        revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-        expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-        labours = Labour.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+        revenues = data_filter(Revenue, today.month, request.user, 'month').order_by('-Date', '-Time')
+        expenses = data_filter(Expend, today.month, request.user, 'month').order_by('-Date', '-Time')
+        labours = data_filter(Labour, today.month, request.user, 'month').order_by('-Date', '-Time')
         total_rev = 0
         total_ex = 0
         total_lb = 0
@@ -292,9 +301,9 @@ def history(request):
             global xexs
             global xlbs
             today = date.today()
-            revenues = Revenue.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-            expenses = Expend.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
-            labours = Labour.objects.filter(user=request.user, Date__month=today.month).order_by('-Date', '-Time')
+            revenues = data_filter(Revenue, today.month, request.user, 'month').order_by('-Date', '-Time')
+            expenses = data_filter(Expend, today.month, request.user, 'month').order_by('-Date', '-Time')
+            labours = data_filter(Labour, today.month, request.user, 'month').order_by('-Date', '-Time')
             total_rev = 0
             total_ex = 0
             total_lb = 0
@@ -381,15 +390,35 @@ def overview(request):
     if request.method == 'GET':
         today = date.today()
         revenues = data_filter(Revenue, today.month, request.user, 'month').order_by('-Date', '-Time')
-        weekdays = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0}
+        expenses = data_filter(Expend, today.month, request.user, 'month').order_by('-Date', '-Time')
+        labours = data_filter(Labour, today.month, request.user, 'month').order_by('-Date', '-Time')
+        weekdays_revenue = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0}
+        weekdays_expense = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0}
+        weekdays_labour = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0}
         for rev in revenues:
-            for day in weekdays:
+            for day in weekdays_revenue:
                 if str(rev.Date.weekday()) == day:
-                    weekdays[day] += int(rev.PriceAmount)
+                    weekdays_revenue[day] += int(rev.PriceAmount)
 
+        for exp in expenses:
+            for day in weekdays_expense:
+                if str(exp.Date.weekday()) == day:
+                    weekdays_expense[day] += int(exp.PriceAmount)
 
-        profits = []
-        for day in weekdays:
-            profits.append(weekdays[day])
+        for lab in labours:
+            for day in weekdays_labour:
+                if str(lab.Date.weekday()) == day:
+                    weekdays_labour[day] += int(lab.PriceAmount)
 
-        return render(request, 'overview.html',{'weekdays':weekdays,'profits': profits})
+        revenues = []
+        expenses = []
+        labours = []
+
+        append_to_list(weekdays_revenue, revenues)
+
+        append_to_list(weekdays_expense, expenses)
+
+        append_to_list(weekdays_labour, labours)
+
+        return render(request, 'overview.html', {'weekdays_revenue':weekdays_revenue,'revenues': revenues,
+                                                 'expenses': expenses,'labours':labours})
