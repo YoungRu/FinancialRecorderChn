@@ -25,12 +25,15 @@ from PIL import Image
 # Create your views here.
 
 
-def data_filter(model, date, user, period='day'):
+def data_filter(model, date, user, period='day', until_for_range = 0):
     if period == 'day':
         data = model.objects.filter(Date__gte=date, user=user)
         return data
     elif period == 'month':
         data = model.objects.filter(Date__month=date, user=user)
+        return data
+    elif period == 'range':
+        data = model.objects.filter(Date__range=[date, until_for_range], user=user)
         return data
 
 
@@ -317,9 +320,9 @@ def history(request):
             Roundoff_Profit = format(profit, '.2f')
             From_Date = request.POST['From_Date']
             Until_Date = request.POST['Until_Date']
-            xrevs = Revenue.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
-            xexs = Expend.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
-            xlbs = Labour.objects.filter(user=request.user, Date__range=[From_Date, Until_Date]).order_by('-Date', '-Time')
+            xrevs = data_filter(Revenue, From_Date, request.user, 'range', Until_Date).order_by('-Date', '-Time')
+            xexs = data_filter(Expend, From_Date, request.user, 'range', Until_Date).order_by('-Date', '-Time')
+            xlbs = data_filter(Labour, From_Date, request.user, 'range', Until_Date).order_by('-Date', '-Time')
             total_xrev = 0
             total_xex = 0
             total_xlb = 0
@@ -422,3 +425,40 @@ def overview(request):
 
         return render(request, 'overview.html', {'weekdays_revenue':weekdays_revenue,'revenues': revenues,
                                                  'expenses': expenses,'labours':labours})
+    elif request.method =='POST':
+        From_Date = request.POST['From_Date']
+        Until_Date = request.POST['Until_Date']
+        revenues = data_filter(Revenue, From_Date, request.user, 'range', Until_Date).order_by('-Date', '-Time')
+        expenses = data_filter(Expend, From_Date, request.user, 'range', Until_Date).order_by('-Date', '-Time')
+        labours = data_filter(Labour, From_Date, request.user, 'range', Until_Date).order_by('-Date', '-Time')
+        weekdays_revenue = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0}
+        weekdays_expense = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0}
+        weekdays_labour = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0}
+        for rev in revenues:
+            for day in weekdays_revenue:
+                if str(rev.Date.weekday()) == day:
+                    weekdays_revenue[day] += int(rev.PriceAmount)
+
+        for exp in expenses:
+            for day in weekdays_expense:
+                if str(exp.Date.weekday()) == day:
+                    weekdays_expense[day] += int(exp.PriceAmount)
+
+        for lab in labours:
+            for day in weekdays_labour:
+                if str(lab.Date.weekday()) == day:
+                    weekdays_labour[day] += int(lab.PriceAmount)
+
+        revenues = []
+        expenses = []
+        labours = []
+
+        append_to_list(weekdays_revenue, revenues)
+
+        append_to_list(weekdays_expense, expenses)
+
+        append_to_list(weekdays_labour, labours)
+
+        return render(request, 'overview.html', {'weekdays_revenue': weekdays_revenue, 'revenues': revenues,
+                                                 'expenses': expenses, 'labours': labours, 'From_Date':From_Date, 'Until_Date':Until_Date})
+

@@ -5,7 +5,23 @@
     <meta charset="UTF-8">
     <title>day</title>
 </head>
+<style>
+    #date_form{
+    font-size: 160%;
+    }
+</style>
 <body>
+<div class="text-center">
+    <form method="POST" id="date_form">
+        {% csrf_token %}
+        <input type="date" name="From_Date" value="From_Date">
+        <input type="date" name="Until_Date" value="Until_Date">
+        <input type="submit" value="确定">
+    </form>
+</div>
+<div class="text-center" >
+    <h3>HISTORY DATA FROM</h3> <h5> {{From_Date}}<strong> - TO - </strong>{{Until_Date}} </h5>
+</div>
 <div class="text-center"><h2>每天产生的总收入（本月）</h2></div>
 <div class="col-lg-12 text-center">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
